@@ -1,31 +1,17 @@
 pipeline {
     agent any
-
     stages {
-        stage('1. Clonar código') {
+        stage('1. Clonar Código') {
             steps {
                 echo 'Obteniendo el código más reciente desde GitHub...'
-                git branch: 'main', url: 'https://github.com/josueAC29/Mi-Sitio-Jenkins.git'
+                // ▼▼▼ ¡¡IMPORTANTE!! Cambia esta URL por la de tu repositorio ▼▼▼
+                git url: 'https://github.com/TU_USUARIO/TU_REPOSITORIO.git', branch: 'main'
             }
         }
-
         stage('2. Desplegar en Servidor Web') {
             steps {
-                echo 'Copiando archivos al servidor Nginx con Docker...'
-                powershell '''
-                    # Eliminar contenedor previo si existe
-                    if (docker ps -a --format "{{.Names}}" | findstr "mi-nginx") {
-                        docker rm -f mi-nginx
-                    }
-
-                    # Levantar contenedor nuevo
-                    docker run -d --name mi-nginx -p 8080:80 nginx
-
-                    # Copiar archivos HTML al contenedor
-                    docker cp index.html mi-nginx:/usr/share/nginx/html/
-
-                    Write-Output "Archivos copiados al contenedor Nginx"
-                '''
+                echo 'Copiando archivos al servidor Nginx...'
+                sh 'cp -f *.html /var/website-data/'
             }
         }
     }
